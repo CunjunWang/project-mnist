@@ -4,4 +4,4 @@ big data and machine learning first attemption.
 
 ## how to build
 - ```npm install```
-- ```pip install -r requirements```
+- ```pip install -r requirements.txt```
