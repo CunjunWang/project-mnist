@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+    <div class="container">
+        <h1>MNIST - hand-write number recognition</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <canvas id="main"></canvas>
+                <p>
+                    <button id="clear" class="btn btn-default">clear</button>
+                </p>
+            </div>
+            <div class="col-md-6">
+                <p>input:</p>
+                <canvas id="input" style="border:1px solid" width="140" height="140"></canvas>
+                <hr>
+                <p>output:</p>
+                <table id="output" class="table">
+                    <tr>
+                        <th class="col-md-1"></th>
+                        <th class="col-md-2">Softmax-regression</th>
+                        <th class="col-md-2">CNN</th>
+                    </tr>
+                    {% for i in range %}
+                        <tr>
+                            <th>{{ i }}</th>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
