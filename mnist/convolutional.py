@@ -6,29 +6,22 @@ from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
 
 with tf.variable_scope("convolutional"):
-    # First arg: type; Second arg: tensor
-    # x is a placeholder, represent the image to be recognized
-    # None means this dimension is arbitrary (number of input images)
     x = tf.placeholder(tf.float32, [None, 784])
     keep_prob = tf.placeholder(tf.float32)
-    y_conv, variables = convolutional_model.convolutional(x, keep_prob)
+    y, variables = convolutional_model.convolutional(x, keep_prob)
 
-# training process
+
 y_ = tf.placeholder(tf.float32, [None, 10])
-cross_entrophy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y_conv))
-train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entrophy)
-correct_prediction = tf.equal(tf.argmax(y_conv, 1), tf.argmax(y_, 1))
+cross_entropy = -tf.reduce_sum(y_ * tf.log(y))
+train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
+correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
+
 saver = tf.train.Saver(variables)
-
 with tf.Session() as sess:
-    merged_summary_op = tf.summary.merge_all()
-    summary_writer = tf.summary.FileWriter('/tmp/mnist_log/1', sess.graph)
-    summary_writer.add_graph(sess.graph)
     sess.run(tf.global_variables_initializer())
-
-    for i in range(30000):
+    for i in range(10000):
         batch = mnist.train.next_batch(50)
         if i % 100 == 0:
             train_accuracy = accuracy.eval(feed_dict={x: batch[0], y_: batch[1], keep_prob: 1.0})
@@ -40,5 +33,4 @@ with tf.Session() as sess:
     path = saver.save(
         sess, os.path.join(os.path.dirname(__file__), 'data', 'convolutional.ckpt'),
         write_meta_graph=False, write_state=False)
-
-    print("Saved: ", path)
+    print("Saved:", path)
