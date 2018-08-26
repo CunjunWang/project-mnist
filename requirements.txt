@@ -1,5 +1,8 @@
+tensorflow
 flask==0.12
 Redis
 cassandra-driver
 Jinja2==2.9.5
 flask_bootstrap
+numpy
+cql

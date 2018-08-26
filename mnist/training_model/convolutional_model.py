@@ -20,7 +20,6 @@ def convolutional(x, keep_prob):
         return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
     x_image = tf.reshape(x, [-1, 28, 28, 1])
-
     ########### 第一卷积层 ###########
     W_conv1 = weight_variable([5, 5, 1, 32])
     b_conv1 = bias_variable([32])
@@ -32,9 +31,7 @@ def convolutional(x, keep_prob):
     ########### 第二卷积层 ###########
     W_conv2 = weight_variable([5, 5, 32, 64])
     b_conv2 = bias_variable([64])
-    # 卷积计算后选用ReLU作为激活函数
     h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)
-    # 调用函数max_pool_2x2进行一次池化操作
     h_pool2 = max_pool_2x2(h_conv2)
 
     ########### 全连接层 ###########
@@ -48,6 +45,6 @@ def convolutional(x, keep_prob):
 
     W_fc2 = weight_variable([1024, 10])
     b_fc2 = bias_variable([10])
-    y_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
+    y = tf.nn.softmax(tf.matmul(h_fc1_drop, W_fc2) + b_fc2)
 
-    return y_conv, [W_conv1, b_conv1, W_conv2, b_conv2, W_fc1, b_fc1, W_fc2, b_fc2]
+    return y, [W_conv1, b_conv1, W_conv2, b_conv2, W_fc1, b_fc1, W_fc2, b_fc2]
