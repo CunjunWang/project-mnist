@@ -1,7 +1,5 @@
 import logging
 from cassandra.cluster import Cluster
-from cassandra import ConsistencyLevel
-from cassandra.query import SimpleStatement
 
 log = logging.getLogger()
 log.setLevel('INFO')
@@ -51,7 +49,3 @@ def createTable():
     session.execute("""CREATE TABLE IF NOT EXISTS %s 
         (id int PRIMARY KEY, img_data text, prediction text, create_time DATE)
         """ % tablename)
-
-# session.execute(
-#     """INSERT INTO testTable (mykey, col1, col2) VALUES (%s, %s, %s)""",
-#     ("mykey", "col1", "col2"))
