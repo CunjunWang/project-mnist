@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+
 # softmax regression
 # Y = Wx+b
 def softmax_regression(x):

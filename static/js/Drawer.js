@@ -83,18 +83,18 @@ class Drawer {
                 return;
             }
 
-            this.getPrediction(inputs);
-
+            this.prepareData = this.getPrediction(inputs);
+            this.saveData(this.prepareData);
         };
+
         img.src = this.canvas.toDataURL();
     }
 
     getPrediction(inputs) {
 
-        console.log("Image Data: " + inputs);
-
         var transferData = {
-            imgData: inputs
+            imgData: inputs,
+            predictionData: ""
         };
 
         $.ajax({
@@ -135,48 +135,25 @@ class Drawer {
                     }
                 }
 
-                console.log("success data: " + JSON.stringify(data));
+                transferData.predictionData = data;
             }
         });
+
+        return transferData;
     }
 
-    saveFile(e) {
+    saveData(data) {
+        $.ajax({
+            url: '/save',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
 
-        var a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style = "display: none";
-
-        var json = JSON.stringify(data),
-            blob = new Blob([data], {type: "text/plain;charset=utf-8"}),
-            url = window.URL.createObjectURL(blob);
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        window.URL.revokeObjectURL(url);
-
-        this.savePreparedData(this.prepareData, "data.txt");
-        e.preventDefault();
+            success: (response) => {
+                return JSON.stringify(response);
+            }
+        })
     }
-
-    savePreparedData(data, fileName) {
-        var a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style = "display: none";
-
-        var json = JSON.stringify(data),
-            blob = new Blob([data], {type: "text/plain;charset=utf-8"}),
-            url = window.URL.createObjectURL(blob);
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        window.URL.revokeObjectURL(url);
-    }
-
-    save() {
-        var savefile = document.getElementById("savefile");
-        savefile.addEventListener("click", this.saveFile, false)
-    }
-
 }
 
 
@@ -187,7 +164,9 @@ $(() => {
         drawer.initialize();
     });
 
+    console.log(this.prepareData);
+
     $('#savefile').click(() => {
-        drawer.save();
+        drawer.saveData(drawer.prepareData);
     });
 });
