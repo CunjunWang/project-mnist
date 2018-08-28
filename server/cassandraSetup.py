@@ -1,7 +1,5 @@
 import logging
 from cassandra.cluster import Cluster
-from cassandra import ConsistencyLevel
-from cassandra.query import SimpleStatement
 
 log = logging.getLogger()
 log.setLevel('INFO')
@@ -9,49 +7,45 @@ handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"))
 log.addHandler(handler)
 
-KEYSPACE = "MNISTSpace"
+KEY_SPACE = "MNISTSpace"
 
 cluster = Cluster(contact_points=['127.0.0.1'])
 session = cluster.connect()
 
-spacenames = list(map(lambda space: space.keyspace_name, session.execute("SELECT * FROM system_schema.keyspaces")))
+space_names = list(map(lambda space: space.keyspace_name, session.execute("SELECT * FROM system_schema.keyspaces")))
 
 
-def setUp():
-    createKeySpace()
-    createTable()
+def cassandra_setup():
+    create_key_space()
+    create_table()
 
 
-def createKeySpace():
+def create_key_space():
     log.info("run create key space")
     try:
         log.info("Creating Keyspace...")
 
-        if KEYSPACE not in spacenames:
-            log.info("Keyspace %s does not exist, creating..." % KEYSPACE)
+        if KEY_SPACE not in space_names:
+            log.info("Keyspace %s does not exist, creating..." % KEY_SPACE)
             session.execute("""
                 CREATE KEYSPACE %s WITH replication = 
                 { 'class': 'SimpleStrategy', 'replication_factor': '2' }
-                """ % KEYSPACE)
-            log.info("Keyspace %s created successfully." % KEYSPACE)
+                """ % KEY_SPACE)
+            log.info("Keyspace %s created successfully." % KEY_SPACE)
         else:
-            log.info("Keyspace %s already existed." % KEYSPACE)
+            log.info("Keyspace %s already existed." % KEY_SPACE)
 
         log.info("Setting Keyspace...")
-        session.set_keyspace(KEYSPACE)
-        session.execute('use %s' % KEYSPACE)
+        session.set_keyspace(KEY_SPACE)
+        session.execute('use %s' % KEY_SPACE)
     except Exception as e:
         log.error("Unable to create keyspace.")
         log.error(e)
 
 
-def createTable():
+def create_table():
     log.info("run create table")
-    tablename = "%s.MNISTDataTable" % KEYSPACE
+    table_name = "%s.MNISTDataTable" % KEY_SPACE
     session.execute("""CREATE TABLE IF NOT EXISTS %s 
-        (id int PRIMARY KEY, img_data text, prediction text, create_time DATE)
-        """ % tablename)
-
-# session.execute(
-#     """INSERT INTO testTable (mykey, col1, col2) VALUES (%s, %s, %s)""",
-#     ("mykey", "col1", "col2"))
+        (id text PRIMARY KEY, img_data text, prediction text, create_time DATE)
+        """ % table_name)

@@ -3,6 +3,7 @@ import tensorflow as tf
 from mnist.training_model import convolutional_model
 from tensorflow.examples.tutorials.mnist import input_data
 
+
 mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
 
 with tf.variable_scope("convolutional"):
