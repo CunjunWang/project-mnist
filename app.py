@@ -1,14 +1,18 @@
 import numpy as np
 import tensorflow as tf
+from flask_bootstrap import Bootstrap
 from flask import Flask, jsonify, render_template, request, url_for
 from mnist.training_model import convolutional_model
 from mnist.training_model import softmax_regression_model
-from flask_bootstrap import Bootstrap
-from server.cassandraSetup import cassandra_setup
-from server.cassandraHandler import save_to_cassndra
+from database.cassandraSetup import cassandra_setup
+from database.cassandraHandler import save_to_cassndra
+from database.cassandraHandler import get_data_from_cassandra
 
-app = Flask(__name__, static_folder="../static", template_folder="../static/templates")
 
+app = Flask(__name__, static_folder="./static")
+
+
+# use bootstrap for UI
 bootstrap = Bootstrap()
 bootstrap.init_app(app)
 
@@ -39,24 +43,23 @@ def convolutional(input_data):
 @app.route('/', methods=['get'])
 def main():
     main_css = url_for('static', filename='css/main.css')
-    return render_template('index.html', range=range(0, 10), mainCSS=main_css)
+    result_data = get_data_from_cassandra()
+    return render_template('./index.html', range=range(0, 10), mainCSS=main_css, result=result_data)
 
 
 @app.route("/mnist", methods=['post'])
 def mnist_main():
-    # print("mnist request is: %s" % request.json)
     input_data = ((255 - np.array(request.json, dtype=np.uint8)) / 255.0).reshape(1, 784)
     regression_output = regression(input_data)
     convolution_output = convolutional(input_data)
-    # print('input 1 from python: %s' % regression_output)
-    # print('input 2 from python: %s' % convolution_output)
     return jsonify(results=[regression_output, convolution_output])
 
 
 @app.route("/save", methods=['post'])
 def save_data():
     received_data = request.json
-    save_to_cassndra(received_data)
+    if received_data['predictionData'] is not '':
+        save_to_cassndra(received_data)
     return "get data"
 
 

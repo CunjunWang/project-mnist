@@ -13,7 +13,7 @@
             </div>
             <div class="col-md-7">
                 <canvas id="input"></canvas>
-                <p>Prediction: </p>
+                <h3>Prediction: </h3>
                 <table id="output" class="table">
                     <tr>
                         <th class="col-md-1"></th>
@@ -31,20 +31,22 @@
             </div>
         </div>
         <div class="row">
-            <p>History: </p>
+            <h3>History: </h3>
             <table id="output" class="table">
                 <tr>
-                    <th class="col-md-2">No.</th>
-                    <th class="col-md-3">Input Picture</th>
-                    <th class="col-md-3">Prediction</th>
-                    <th class="col-md-5">Create Time</th>
+                    <th class="col-md-5">UUID</th>
+                    <th class="col-md-2">SoftMax Prediction</th>
+                    <th class="col-md-2">Convolution Prediction</th>
+                    <th class="col-md-3">TimeStamp</th>
                 </tr>
-                <tr>
-                    <th></th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                {% for item in result %}
+                    <tr>
+                        <th>{{ item.id }}</th>
+                        <th>{{ item.softmax_prediction }}</th>
+                        <th>{{ item.convolution_prediction }}</th>
+                        <th>{{ item.create_time }}</th>
+                    </tr>
+                {% endfor %}
             </table>
         </div>
     </div>

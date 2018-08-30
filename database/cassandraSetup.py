@@ -33,7 +33,7 @@ def create_key_space():
                 """ % KEY_SPACE)
             log.info("Keyspace %s created successfully." % KEY_SPACE)
         else:
-            log.info("Keyspace %s already existed." % KEY_SPACE)
+            log.info("Keyspace %s exists." % KEY_SPACE)
 
         log.info("Setting Keyspace...")
         session.set_keyspace(KEY_SPACE)
@@ -47,5 +47,5 @@ def create_table():
     log.info("run create table")
     table_name = "%s.MNISTDataTable" % KEY_SPACE
     session.execute("""CREATE TABLE IF NOT EXISTS %s 
-        (id text PRIMARY KEY, img_data text, prediction text, create_time DATE)
+        (id uuid PRIMARY KEY, softmax_prediction int , convolution_prediction int , create_time float)
         """ % table_name)
