@@ -164,9 +164,9 @@ $(() => {
         drawer.initialize();
     });
 
-    console.log(this.prepareData);
-
     $('#savefile').click(() => {
-        drawer.saveData(drawer.prepareData);
+        if(drawer.prepareData) {
+            drawer.saveData(drawer.prepareData);
+        }
     });
 });
