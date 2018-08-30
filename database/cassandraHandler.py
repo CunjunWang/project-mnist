@@ -2,9 +2,9 @@ import datetime
 import uuid
 from numpy import long
 import numpy as np
+from datetime import datetime as DT
 
 from database.cassandraSetup import session
-
 
 
 def unix_time(dt):
@@ -35,3 +35,8 @@ def save_to_cassndra(data_to_save):
     print(data['timestamp'])
     session.execute("""INSERT INTO mnistspace.mnistdatatable(id, softmax_prediction, convolution_prediction, create_time)
         VALUES( %s, %s, %s, %s)""" % (data['id'], data['softmax_prediction'], data['convolution_prediction'], data['timestamp']))
+
+
+def get_data_from_cassandra():
+    data = session.execute("""SELECT * FROM mnistspace.mnistdatatable""")
+    return data

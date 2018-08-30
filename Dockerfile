@@ -10,8 +10,6 @@ ADD . /app
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-RUN docker run --name cunjunwang-cassandra -p 9042:9042 -d cassandra:latest
-
 # Make port 80 available to the world outside this container
 EXPOSE 80
 

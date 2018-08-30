@@ -6,8 +6,11 @@ from mnist.training_model import convolutional_model
 from mnist.training_model import softmax_regression_model
 from database.cassandraSetup import cassandra_setup
 from database.cassandraHandler import save_to_cassndra
+from database.cassandraHandler import get_data_from_cassandra
+
 
 app = Flask(__name__, static_folder="./static")
+
 
 # use bootstrap for UI
 bootstrap = Bootstrap()
@@ -40,7 +43,8 @@ def convolutional(input_data):
 @app.route('/', methods=['get'])
 def main():
     main_css = url_for('static', filename='css/main.css')
-    return render_template('./index.html', range=range(0, 10), mainCSS=main_css)
+    result_data = get_data_from_cassandra()
+    return render_template('./index.html', range=range(0, 10), mainCSS=main_css, result=result_data)
 
 
 @app.route("/mnist", methods=['post'])
